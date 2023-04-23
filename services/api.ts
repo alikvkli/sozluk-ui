@@ -24,6 +24,17 @@ export const getEntries = async (props: GetEntriesProp) => {
     return res.data;
 }
 
+export const getAllEntries = async (props: GetEntriesProp) => {
+    const res = await axios.get<EntryResponseProps>("/getAllEntries", {
+        params: {
+            page: props.page
+        }
+    });
+    return res.data;
+}
+
+
+
 export const createEntry = async (props: CreateEntryProps) => {
     let data = new FormData();
     data.append("caption_id", props.caption_id);

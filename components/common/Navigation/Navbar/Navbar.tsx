@@ -10,11 +10,14 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {  Grid3x3, Lightbulb, Mail, MenuBook, Notifications, Person } from '@mui/icons-material';
-import { useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 import * as Styled from "./Navbar.styles"
 import { Search } from '@mui/icons-material';
 import { Alert, Badge, Divider, Pagination } from '@mui/material';
 import { deepOrange, deepPurple } from '@mui/material/colors';
+import { useRouter } from 'next/router';
+import { clearActiveCaption, setActiveCaption } from '@/features/app/app';
+import { setBreadCrumbs } from '@/features/breadcrumbs/breadcrumbs';
 
 const settings = ['Profilim', 'Ayarlar', 'Çıkış yap'];
 
@@ -24,7 +27,8 @@ const Navbar = () => {
     const [notificationMenu, setNotificationMenu] = React.useState<null | HTMLElement>(null);
     const [messageMenu, setMessageMenu] = React.useState<null | HTMLElement>(null);
     const [searchMenu, setSearchMenu] = React.useState<null | HTMLElement>(null);
-
+    const dispatch = useAppDispatch();
+    const router = useRouter();
     const handleCloseSearchMenu = () => {
         setSearchMenu(null);
     }
@@ -41,13 +45,19 @@ const Navbar = () => {
         setSettingMenu(null);
     };
 
+    const routeToHome = () => {
+        dispatch(setBreadCrumbs("Anasayfa"));
+        dispatch(clearActiveCaption());
+        router.push("/");
+    }
+
     return (
         <AppBar position="sticky">
             <Container maxWidth="xl">
                 <Toolbar disableGutters >
                     <Box display="flex" flex={1} alignItems="center" justifyContent="space-between">
 
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', cursor:"pointer" }} onClick={() => routeToHome()}>
                             <MenuBook sx={{ display: 'flex', mr: 1 }} />
                             <Typography
                                 variant="h6"

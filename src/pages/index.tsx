@@ -3,17 +3,19 @@ import Head from 'next/head'
 import React from "react";
 import Home from '@/components/pages/home/Home';
 import { GetServerSideProps } from 'next/types';
-import { getCaptions } from '@/services/api';
+import { getAllEntries, getCaptions } from '@/services/api';
 import { useAppDispatch } from '@/hooks';
 import useUpdateEffect from '@/hooks/useUpdateEffect';
-import { setLeftSideBar } from '@/features/app/app';
+import { setEntries, setEntryPaginate, setLeftSideBar } from '@/features/app/app';
 import { IndexPageProps } from '@/types/pages';
 
-export default function Index({ captions }: IndexPageProps) {
+export default function Index(props: IndexPageProps) {
   const dispatch = useAppDispatch();
 
   useUpdateEffect(() => {
-    dispatch(setLeftSideBar(captions))
+    dispatch(setLeftSideBar(props.captions));
+    dispatch(setEntries(props.entries.data));
+    dispatch(setEntryPaginate({ page: props.entries.pagination.current_page, total: props.entries.pagination.total, perPage: props.entries.pagination.per_page }))
   }, [dispatch])
 
   return (
@@ -32,9 +34,11 @@ export default function Index({ captions }: IndexPageProps) {
 }
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const res = await getCaptions({ page: 1 })
+  const entries = await getAllEntries({ page: 1 });
   return {
     props: {
       captions: res.payload.data,
+      entries: entries.payload
     },
   }
 }

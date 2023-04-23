@@ -1,18 +1,19 @@
 import BreadCrumbs from "@/components/common/BreadCrumbs/BreadCrumbs";
 import EntryCard from "@/components/common/Cards/EntryCard/EntryCard";
-import { Box, Typography } from "@mui/material";
+import { useAppSelector } from "@/hooks";
+import { EntryProps } from "@/services/api.types";
+import { Box } from "@mui/material";
 
 const Home = () => {
+    const { entries } = useAppSelector(state => state.app);
+
     return (
         <>
             <BreadCrumbs />
             <Box display="flex" flexDirection="column">
-                <EntryCard />
-                <EntryCard />
-                <EntryCard />
-                <EntryCard />
-                <EntryCard />
-
+                {entries.map((item: EntryProps) => (
+                    <EntryCard key={item.id} showCaption={true} entry={item} />
+                ))}
             </Box>
         </>
     )

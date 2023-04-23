@@ -4,7 +4,7 @@ export interface GetCaptionProps {
 
 export interface GetEntriesProp {
     page:  number | string | string[] | undefined ;
-    caption: string | string[] | undefined;
+    caption?: string | string[] | undefined;
 }
 export interface CaptionProps {
     id?:number;
@@ -40,6 +40,8 @@ export interface CaptionResponseProps {
 export interface EntryProps {
     id: number;
     content: string;
+    title?:string;
+    slug?:string;
     show: boolean;
     pending: boolean;
     created_at: string;

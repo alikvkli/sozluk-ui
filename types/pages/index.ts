@@ -1,7 +1,12 @@
 import { CaptionProps, EntryProps, PaginationProps } from "@/services/api.types";
 
 export interface IndexPageProps{
-    captions: CaptionProps[]
+    captions: CaptionProps[];
+    entries : {
+        caption: CaptionProps;
+        data: EntryProps[];
+        pagination: PaginationProps;
+    }
 }
 
 export interface CaptionPageProps{
