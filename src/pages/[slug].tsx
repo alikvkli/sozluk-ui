@@ -1,6 +1,6 @@
 import MainLayout from '@/components/common/Layouts/MainLayout/MainLayout'
 import CaptionComponent from '@/components/pages/caption/Caption';
-import { setActiveCaption, setEntries, setEntryPaginate, setLeftSideBar } from '@/features/app/app';
+import { setActiveCaption, setCaptionEntries, setCaptionPagination, setLeftSideBar } from '@/features/app/app';
 import { setBreadCrumbs } from '@/features/breadcrumbs/breadcrumbs';
 import { useAppDispatch } from '@/hooks';
 import useUpdateEffect from '@/hooks/useUpdateEffect'
@@ -18,8 +18,8 @@ export default function Caption(props: CaptionPageProps) {
         dispatch(setLeftSideBar(props.captions))
         dispatch(setBreadCrumbs(props?.entries?.caption?.title));
         dispatch(setActiveCaption(props.entries.caption));
-        dispatch(setEntries(props.entries.data));
-        dispatch(setEntryPaginate({ page: props.entries.pagination.current_page, total: props.entries.pagination.total, perPage: props.entries.pagination.per_page }))
+        dispatch(setCaptionEntries(props.entries.data));
+        dispatch(setCaptionPagination({ page: props.entries.pagination.current_page, total: props.entries.pagination.total_pages}))
     }, [props, dispatch])
     return (
         <>

@@ -1,4 +1,5 @@
-import { EntryProps } from "@/services/api.types";
+import { EntryProps } from "../../../../types/api/entries";
+
 
 export interface EntryCardProps{
     showCaption?: boolean;

@@ -15,5 +15,14 @@ export const ChildrenContainer = styled(Container)<ChildrenContainerProps>(({the
     marginRight:'unset'
 }))
 
-
+export const LoadingOverlay = styled(Container)({
+    position:"absolute",
+    top:0,
+    left:0,
+    width:"100%",
+    height:"100%",
+    background:"rgba(255, 255, 255, 0.30)",
+    backdropFilter:"blur(3px)",
+    zIndex:9
+})
 

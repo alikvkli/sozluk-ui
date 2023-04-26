@@ -6,16 +6,21 @@ import { GetServerSideProps } from 'next/types';
 import { getAllEntries, getCaptions } from '@/services/api';
 import { useAppDispatch } from '@/hooks';
 import useUpdateEffect from '@/hooks/useUpdateEffect';
-import { setEntries, setEntryPaginate, setLeftSideBar } from '@/features/app/app';
+import {  setHomePagination, setHomeEntries, setLeftSideBar, clearHomeEntries } from '@/features/app/app';
 import { IndexPageProps } from '@/types/pages';
+import { setBreadCrumbs } from '@/features/breadcrumbs/breadcrumbs';
 
 export default function Index(props: IndexPageProps) {
   const dispatch = useAppDispatch();
 
+  
+
   useUpdateEffect(() => {
+    dispatch(clearHomeEntries());
+    dispatch(setBreadCrumbs("Anasayfa"));
     dispatch(setLeftSideBar(props.captions));
-    dispatch(setEntries(props.entries.data));
-    dispatch(setEntryPaginate({ page: props.entries.pagination.current_page, total: props.entries.pagination.total, perPage: props.entries.pagination.per_page }))
+    dispatch(setHomeEntries(props.entries.data));
+    dispatch(setHomePagination({ page: props.entries.pagination.current_page, total: props.entries.pagination.total_pages }))
   }, [dispatch])
 
   return (

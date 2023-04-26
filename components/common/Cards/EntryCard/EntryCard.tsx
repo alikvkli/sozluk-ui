@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Avatar, Badge, Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Avatar, Badge, Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import * as Styled from "./EntryCard.styles"
 import { ArrowDownward, ArrowUpward, ChatBubbleOutline, Equalizer, Favorite, MoreVert } from "@mui/icons-material";
 import { EntryCardProps } from './EntryCard.types';
-import { useAppDispatch, useAppSelector } from '@/hooks';
-import { clearActiveCaption, clearEntries } from '@/features/app/app';
+import { useAppDispatch } from '@/hooks';
+import { clearActiveCaption, clearCaptionEntries } from '@/features/app/app';
 import { useRouter } from 'next/router';
 const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry }) => {
     const dispatch = useAppDispatch();
@@ -13,8 +13,8 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry }) => {
     const handleCloseEntryMenu = () => {
         setEntrySetting(null);
     }
-    const routeToCaption = (slug:string | undefined) => {
-        dispatch(clearEntries());
+    const routeToCaption = (slug: string | undefined) => {
+        dispatch(clearCaptionEntries());
         dispatch(clearActiveCaption());
         router.push(`/${slug}`)
     }
@@ -27,41 +27,48 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry }) => {
                 <Box display="flex" flex={1} flexDirection="column">
                     {showCaption && (
                         <Box display="flex" alignItems="center" justifyContent="space-between">
-                            <Typography component="a" onClick={() => routeToCaption(entry?.slug)} fontWeight={500} fontSize={17}>{entry?.title}</Typography>
+                            <Typography component="a" onClick={() => routeToCaption(entry?.caption_slug)} fontWeight={500} fontSize={17}>{entry?.caption}</Typography>
                             <IconButton onClick={(e: React.MouseEvent<HTMLElement>) => setEntrySetting(e.currentTarget)}>
                                 <MoreVert />
                             </IconButton>
                         </Box>
                     )}
-                    <Box display="flex" alignItems="flex-start"  justifyContent="space-between">
-                        <Typography color="#536471" fontSize={14}>@{entry?.username}</Typography>
-                        <Typography color="#536471" fontSize={14}>{new Date(entry?.created_at).toLocaleDateString("tr-TR", {hour:"2-digit", minute:"2-digit"})}</Typography>
+                    <Box display="flex" alignItems="flex-start" justifyContent="space-between">
+                        <Box display="flex" flexDirection="row" gap={1}>
+                            <Typography color="#536471" fontSize={14}>@{entry?.username}</Typography>
+                            <Divider orientation="vertical"  flexItem/>
+                            <Typography color="#536471" fontSize={14}>#{entry?.entry_id}</Typography>
+                        </Box>
+                        <Typography color="#536471" fontSize={14}>{new Date(entry?.created_at).toLocaleDateString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</Typography>
                     </Box>
                     <Typography>
                         {entry?.content}
                     </Typography>
 
                     <Box display="flex" alignItems="center" justifyContent="flex-start" mt={1} gap={1}>
+                        <Box display="flex" alignItems="center">
+                            <IconButton>
+                                <ArrowUpward />
+                            </IconButton>
+                            <Typography>{entry?.likes?.filter(item => item.type === 1)?.length}</Typography>
+                        </Box>
+                        <Box display="flex" alignItems="center">
+                            <IconButton>
+                                <ArrowDownward />
+                            </IconButton>
+                            <Typography>{entry?.likes?.filter(item => item.type === 0)?.length}</Typography>
+                        </Box>
+                        <Box display="flex" alignItems="center">
+                            <IconButton>
+                                <Favorite />
+                            </IconButton>
+                            <Typography>{entry?.favorites?.length}</Typography>
+                        </Box>
                         <IconButton>
-                            <ArrowUpward />
-                        </IconButton>
-                        <IconButton>
-                            <ArrowDownward />
-                        </IconButton>
-                        <IconButton>
-                            <Favorite color="error" />
-                        </IconButton>
-                        <IconButton>
-                            <Badge badgeContent={19} max={10} color="error">
+                            <Badge badgeContent={entry?.comments?.length} max={10} color="error">
                                 <ChatBubbleOutline />
                             </Badge>
                         </IconButton>
-                        <Box display="flex" alignItems="center">
-                            <IconButton>
-                                <Equalizer />
-                            </IconButton>
-                            <Typography>12</Typography>
-                        </Box>
                     </Box>
                 </Box>
             </Box>

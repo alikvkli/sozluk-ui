@@ -2,16 +2,16 @@ import { Box, IconButton, Typography } from "@mui/material"
 import * as Styled from "./LeftSideBar.styles"
 import { KeyboardDoubleArrowLeft, KeyboardDoubleArrowRight, Refresh } from "@mui/icons-material"
 import { useAppDispatch, useAppSelector } from "@/hooks"
-import { CaptionProps } from "@/services/api.types"
 import { useRouter } from "next/router"
-import { clearActiveCaption, clearEntries } from "@/features/app/app"
+import { clearActiveCaption, clearCaptionEntries } from "@/features/app/app"
+import { CaptionProps } from "../../../../types/api/captions"
 
 export default function LeftSideBar() {
     const { leftSideBar } = useAppSelector(state => state.app);
     const dispatch = useAppDispatch();
     const router = useRouter();
     const routeToCaption = (slug: string | undefined) => {
-        dispatch(clearEntries());
+        dispatch(clearCaptionEntries());
         dispatch(clearActiveCaption());
         router.push(`/${slug}`)
     }
