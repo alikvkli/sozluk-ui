@@ -1,9 +1,11 @@
 import app from "@/features/app/app"
-import breadcrumbs from "@/features/breadcrumbs/breadcrumbs";
 import { configureStore, combineReducers, ThunkAction, Action } from "@reduxjs/toolkit"
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage/session';
 import { encryptTransform } from 'redux-persist-transform-encrypt';
+import auth from "@/features/auth/auth";
+import entry from "@/features/entry/entry";
+import caption from "@/features/caption/caption";
 
 
 const encryptor = encryptTransform({
@@ -13,9 +15,11 @@ const encryptor = encryptTransform({
     },
 });
 
-const rootReducer = combineReducers({
+const reducers = combineReducers({
     app: app,
-    breadcrumbs: breadcrumbs
+    auth: auth,
+    entry:entry,
+    caption:caption
 });
 
 const persistConfig = {
@@ -23,10 +27,10 @@ const persistConfig = {
     storage,
     transforms: [encryptor]
 };
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
-    reducer: persistedReducer,
+    reducer: typeof window !== undefined ?  persistedReducer : reducers,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false
@@ -38,7 +42,7 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof reducers>;
 export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<
     ReturnType,

@@ -10,8 +10,8 @@ export interface EntryProps {
     likes: LikeProps[];
     comments: CommentProps[];
     favorites: FavoriteProps[];
-    title?:string;
-    slug?:string;
+    title?: string;
+    slug?: string;
     show: boolean;
     pending: boolean;
     created_at: string;
@@ -19,21 +19,21 @@ export interface EntryProps {
     username: string;
 }
 
-export interface FavoriteProps{
+export interface FavoriteProps {
     id: number;
-    username : string;
+    username: string;
     created_at: string;
 }
 
-export interface CommentProps{
+export interface CommentProps {
     id: number;
-    username : string;
-    comment : string;
-    created_at : string;
+    username: string;
+    comment: string;
+    created_at: string;
 }
 
 
-export interface LikeProps{
+export interface LikeProps {
     id: number;
     username: string;
     type: number;
@@ -49,15 +49,21 @@ export interface EntryResponseProps {
     caption: CaptionProps
 }
 
+export interface CreateEntryResponseProps {
+    status: number;
+    message: string;
+}
+
 
 
 export interface GetEntriesProp {
-    page:  number | string | string[] | undefined ;
+    page: number | string | string[] | undefined;
     caption?: string | string[] | undefined;
 }
 
 
-export interface CreateEntryProps{
+export interface CreateEntryProps {
     caption_id: number | any;
     content: string;
+    token: string | undefined;
 }

@@ -1,14 +1,15 @@
 import BreadCrumbs from "@/components/common/BreadCrumbs/BreadCrumbs";
 import EntryCard from "@/components/common/Cards/EntryCard/EntryCard";
 import EntryEditor from "@/components/common/EntryEditor/EntryEditor";
-import { setCaptionEntries, setCaptionPagination, setLoading } from "@/features/app/app";
+import { setLoading } from "@/features/app/app";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { getEntries } from "@/services/api";
 import { Box, Pagination } from "@mui/material";
 import { EntryProps } from "../../../types/api/entries";
+import { setCaptionEntries, setCaptionPagination } from "@/features/entry/entry";
 const CaptionComponent = () => {
-    const { caption_entries, activeCaption, paginations } = useAppSelector(state => state.app);
-
+    const { activeCaption, } = useAppSelector(state => state.caption);
+    const { caption_entries, paginations } = useAppSelector(state => state.entry)
     const dispatch = useAppDispatch();
 
 
@@ -29,9 +30,9 @@ const CaptionComponent = () => {
 
     return (
         <>
-            <BreadCrumbs pagination={<Pagination page={paginations.caption.page} onChange={(event: React.ChangeEvent<unknown>, page: number) => loadMore(page)} count={paginations.caption.total || 1} />} />
+            <BreadCrumbs title={activeCaption?.title} component={<Pagination page={paginations.caption.page} onChange={(event: React.ChangeEvent<unknown>, page: number) => loadMore(page)} count={paginations.caption.total || 1} />} />
             {activeCaption.title && <EntryEditor />}
-            <Box display="flex" flexDirection="column" >
+            <Box display="flex" flexDirection="column" gap={2} >
                 {caption_entries.map((item: EntryProps, key: number) => (
                     <EntryCard key={key} showCaption={false} entry={item} />
                 ))}

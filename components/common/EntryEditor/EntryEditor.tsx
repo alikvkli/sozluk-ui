@@ -1,22 +1,38 @@
 import { Alert, Avatar, Box, Button, Snackbar, TextField } from "@mui/material";
 import * as Styled from "./EntryEditor.styles"
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { ChangeEvent, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { createEntry } from "@/services/api";
 import { useRouter } from "next/router";
+import { setLoading } from "@/features/app/app";
+import { NotificationState } from "@/components/pages/register/Register.types";
+import Notification from "@/components/common/Notification/Notification";
+
 const EntryEditor = () => {
-    const { activeCaption } = useAppSelector(state => state.app);
+    const dispatch = useAppDispatch();
+    const { activeCaption } = useAppSelector(state => state.caption);
+    const { loading } = useAppSelector(state => state.app);
+    const { login, token } = useAppSelector(state => state.auth);
     const [text, setText] = useState<string>("");
-    const [loading, setLoading] = useState(false);
+    const [notification, setNotification] = useState<NotificationState>({ open: false, message: "", type: "error" });
+
     const router = useRouter();
     const handleSaveEntry = async () => {
-        setLoading(true);
-        await createEntry({ caption_id: activeCaption.id, content: text })
+        dispatch(setLoading(true))
+        await createEntry({ caption_id: activeCaption.id, content: text, token })
+            .then((res) => {
+                if (res.status === 1) {
+                    setNotification({ open: true, message: res.message, type: "success" });
+                    router.push(router.asPath);
+                }
+            })
+            .catch((error) => {
+                setNotification({ open: true, message: error.response.data.message, type: "error" });
+            })
             .finally(() => {
-                setText("")
-                setLoading(false);
-                router.push(router.asPath);
+                setText("");
+                dispatch(setLoading(false))
             })
     }
     return (
@@ -34,9 +50,15 @@ const EntryEditor = () => {
                     value={text}
                     variant="filled"
                 />
-                <LoadingButton loading={loading} variant="outlined" disabled={text.length < 3} onClick={() => handleSaveEntry()}>Paylaş</LoadingButton>
+                <LoadingButton loading={loading} variant="outlined" disabled={text.length < 3 || !login} onClick={() => handleSaveEntry()}>Paylaş</LoadingButton>
 
             </Box>
+            <Notification
+                duration={5000}
+                position={{ vertical: "top", horizontal: "right" }}
+                open={notification.open}
+                setOpen={() => setNotification({ ...notification, open: false })}
+                message={notification.message} type={notification.type} />
         </Styled.EntryEditorContainer>
     )
 }

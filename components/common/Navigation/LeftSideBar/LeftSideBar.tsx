@@ -3,11 +3,12 @@ import * as Styled from "./LeftSideBar.styles"
 import { KeyboardDoubleArrowLeft, KeyboardDoubleArrowRight, Refresh } from "@mui/icons-material"
 import { useAppDispatch, useAppSelector } from "@/hooks"
 import { useRouter } from "next/router"
-import { clearActiveCaption, clearCaptionEntries } from "@/features/app/app"
 import { CaptionProps } from "../../../../types/api/captions"
+import { clearCaptionEntries } from "@/features/entry/entry"
+import { clearActiveCaption } from "@/features/caption/caption"
 
 export default function LeftSideBar() {
-    const { leftSideBar } = useAppSelector(state => state.app);
+    const { leftSideBar } = useAppSelector(state => state.caption);
     const dispatch = useAppDispatch();
     const router = useRouter();
     const routeToCaption = (slug: string | undefined) => {

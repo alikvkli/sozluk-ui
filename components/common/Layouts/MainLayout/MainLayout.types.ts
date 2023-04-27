@@ -3,7 +3,9 @@ import { BoxProps, ContainerProps, Theme } from "@mui/material";
 
 
 export interface MainLayoutProps{
-    children: React.ReactNode
+    children: React.ReactNode;
+    showLoading?:boolean;
+    login?:boolean;
 }
 
 export interface MainLayoutChildrenProps extends BoxProps{

@@ -3,11 +3,13 @@ import { Avatar, Badge, Box, Divider, IconButton, Menu, MenuItem, Typography } f
 import * as Styled from "./EntryCard.styles"
 import { ArrowDownward, ArrowUpward, ChatBubbleOutline, Equalizer, Favorite, MoreVert } from "@mui/icons-material";
 import { EntryCardProps } from './EntryCard.types';
-import { useAppDispatch } from '@/hooks';
-import { clearActiveCaption, clearCaptionEntries } from '@/features/app/app';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 import { useRouter } from 'next/router';
+import { clearCaptionEntries } from '@/features/entry/entry';
+import { clearActiveCaption } from '@/features/caption/caption';
 const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry }) => {
     const dispatch = useAppDispatch();
+    const { login } = useAppSelector(state => state.auth);
     const router = useRouter();
     const [entrySetting, setEntrySetting] = React.useState<null | HTMLElement>(null);
     const handleCloseEntryMenu = () => {
@@ -28,15 +30,17 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry }) => {
                     {showCaption && (
                         <Box display="flex" alignItems="center" justifyContent="space-between">
                             <Typography component="a" onClick={() => routeToCaption(entry?.caption_slug)} fontWeight={500} fontSize={17}>{entry?.caption}</Typography>
-                            <IconButton onClick={(e: React.MouseEvent<HTMLElement>) => setEntrySetting(e.currentTarget)}>
-                                <MoreVert />
-                            </IconButton>
+                            {login && (
+                                <IconButton onClick={(e: React.MouseEvent<HTMLElement>) => setEntrySetting(e.currentTarget)}>
+                                    <MoreVert />
+                                </IconButton>
+                            )}
                         </Box>
                     )}
                     <Box display="flex" alignItems="flex-start" justifyContent="space-between">
                         <Box display="flex" flexDirection="row" gap={1}>
                             <Typography color="#536471" fontSize={14}>@{entry?.username}</Typography>
-                            <Divider orientation="vertical"  flexItem/>
+                            <Divider orientation="vertical" flexItem />
                             <Typography color="#536471" fontSize={14}>#{entry?.entry_id}</Typography>
                         </Box>
                         <Typography color="#536471" fontSize={14}>{new Date(entry?.created_at).toLocaleDateString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</Typography>

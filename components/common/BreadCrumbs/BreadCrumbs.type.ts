@@ -1,5 +1,6 @@
 import React from "react";
 
 export interface BreadCrumbProp{
-    pagination?:React.ReactNode
+    component?:React.ReactNode,
+    title: string  | undefined;
 }
