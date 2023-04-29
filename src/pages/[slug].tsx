@@ -19,10 +19,11 @@ export default function Caption(props: CaptionPageProps) {
         if (!active_topic) {
             dispatch(setLeftSideBar(props.captions.payload.data))
             dispatch(setCaptionPagination({ page: props.captions.payload.pagination.current_page, total: props.captions.payload.pagination.total_pages }))
-
+    
         } else {
             checkTopicSelected();
         }
+       
         dispatch(setActiveCaption(props.entries.caption));
         dispatch(setCaptionEntries(props.entries.data));
         dispatch(setEntryCaptionPagination({ page: props.entries.pagination.current_page, total: props.entries.pagination.total_pages }))
@@ -37,7 +38,6 @@ export default function Caption(props: CaptionPageProps) {
         }).finally(() => {
             dispatch(setCaptionLoading(false));
         })
-
     }
 
     return (

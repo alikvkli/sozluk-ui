@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks';
 import useUpdateEffect from '@/hooks/useUpdateEffect';
 import { IndexPageProps } from '@/types/pages';
 import { clearHomeEntries, setHomeEntries, setHomePagination } from '@/features/entry/entry';
-import { setLeftSideBar } from '@/features/caption/caption';
+import { setCaptionPagination, setLeftSideBar } from '@/features/caption/caption';
 import { setTopicData } from '@/features/topic/topic';
 
 export default function Index(props: IndexPageProps) {
@@ -20,6 +20,8 @@ export default function Index(props: IndexPageProps) {
     dispatch(clearHomeEntries());
     if(!active_topic){
       dispatch(setLeftSideBar(props.captions.payload.data));
+      dispatch(setCaptionPagination({ page: props.captions.payload.pagination.current_page, total: props.captions.payload.pagination.total_pages }))
+
     }
     dispatch(setHomeEntries(props.entries.payload.data));
     dispatch(setHomePagination({ page: props.entries.payload.pagination.current_page, total: props.entries.payload.pagination.total_pages }))

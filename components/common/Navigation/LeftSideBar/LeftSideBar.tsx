@@ -32,6 +32,16 @@ export default function LeftSideBar() {
         })
     }
 
+    const handleChangePage = async (page: number) => {
+        dispatch(setCaptionLoading(true));
+        await getCaptions({ page: page, topic_id: active_topic?.id }).then(res => {
+            dispatch(setLeftSideBar(res.payload.data))
+            dispatch(setCaptionPagination({ page: res.payload.pagination.current_page, total: res.payload.pagination.total_pages }))
+        }).finally(() => {
+            dispatch(setCaptionLoading(false));
+        })
+    }
+
     const handleRefreshCaption = async () => {
         dispatch(setCaptionLoading(true));
         await getCaptions({ page: pagination?.page || 1, topic_id: active_topic?.id }).then(res => {
@@ -50,8 +60,8 @@ export default function LeftSideBar() {
                         <Styled.TagTitle onClick={() => handleClearTopic()} variant="contained" endIcon={<Close />}>{active_topic.name}</Styled.TagTitle>
                     )}
                     <Box display="flex" alignItems="center">
-                        {pagination?.total !== pagination?.page && pagination?.page !== 1 && (
-                            <IconButton >
+                        {pagination?.total > 1 && pagination?.page !== 1 && (
+                            <IconButton onClick={() => handleChangePage(pagination?.page -1)} >
                                 <KeyboardDoubleArrowLeft />
                             </IconButton>
                         )}
@@ -59,7 +69,7 @@ export default function LeftSideBar() {
                             <Refresh />
                         </IconButton>
                         {pagination?.total > 1 && pagination?.page !== pagination?.total && (
-                            <IconButton>
+                            <IconButton onClick={() => handleChangePage(pagination?.page + 1)}>
                                 <KeyboardDoubleArrowRight />
                             </IconButton>
                         )}

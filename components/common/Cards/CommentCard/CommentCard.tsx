@@ -32,7 +32,7 @@ const CommentCard: FC<CommentCardProps> = ({ comment }) => {
     }
 
     return (
-        <Styled.CommentCardContainer flex={1} display="flex" alignItems="stretch" justifyContent="space-between">
+        <Styled.CommentCardContainer flex={1} display="flex" alignItems="stretch" gap={4} justifyContent="space-between">
             <Box display="flex" flexDirection="column" alignItems="flex-start" justifyContent="space-between">
                 <Typography component="p" fontSize={14} color="GrayText">{convertLocaleDate(comment.created_at)}</Typography>
                 <Typography component="p" fontSize={15} color="GrayText">@{comment.username}</Typography>

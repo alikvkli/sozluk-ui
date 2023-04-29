@@ -15,8 +15,8 @@ export const RightSide = styled(Box)({
 export const Item = styled(Box)({
     cursor: "pointer",
     ":hover": {
-        background: "#f7f9f9",
-        padding: "12px 0",
-        borderRadius: theme.shape.borderRadius
+        //background: "#f7f9f9",
+        //padding: "12px 0",
+        //borderRadius: theme.shape.borderRadius
     }
 })
