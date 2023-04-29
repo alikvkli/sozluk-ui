@@ -1,5 +1,5 @@
 import BreadCrumbs from "@/components/common/BreadCrumbs/BreadCrumbs";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import * as Styled from "./Login.styles";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { LoginDataProps } from "./Login.types";
@@ -55,7 +55,7 @@ const Login = () => {
 
     return (
         <>
-            <BreadCrumbs title="Giriş Yap" />
+            <BreadCrumbs title={<Typography fontSize={20} fontWeight={500}>Giriş Yap</Typography>} />
             <Styled.LoginCardContainer display="flex" flexDirection="column" gap={2}>
                 <TextField id="email" label="Email" value={data.email} variant="outlined" onChange={handleChange} error={!!formErrors.email} helperText={formErrors.email && formErrors.email.join(", ").replace("email", "Email")} />
                 <TextField id="password" label="Şifre" value={data.password} variant="outlined" onChange={handleChange} error={!!formErrors.password} helperText={formErrors.password && formErrors.password.join(", ")} />

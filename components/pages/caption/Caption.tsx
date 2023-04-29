@@ -4,7 +4,7 @@ import EntryEditor from "@/components/common/EntryEditor/EntryEditor";
 import { setLoading } from "@/features/app/app";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { createEntry, getEntries } from "@/services/api";
-import { Box, Pagination } from "@mui/material";
+import { Box, Pagination, Typography } from "@mui/material";
 import { EntryProps } from "../../../types/api/entries";
 import { setCaptionEntries, setEntryCaptionPagination } from "@/features/entry/entry";
 import { useRouter } from "next/router";
@@ -54,15 +54,13 @@ const CaptionComponent = () => {
             })
     }
 
-
-
     return (
         <>
-            <BreadCrumbs title={active_caption?.title || "..."} component={<Pagination page={paginations.caption.page} onChange={(event: React.ChangeEvent<unknown>, page: number) => loadMore(page)} count={paginations.caption.total || 1} />} />
+            <BreadCrumbs title={<Typography fontSize={20} fontWeight={500}>{active_caption?.title || "..."}</Typography>} component={<Pagination page={paginations.caption.page} onChange={(event: React.ChangeEvent<unknown>, page: number) => loadMore(page)} count={paginations.caption.total || 1} />} />
             {active_caption?.title && <EntryEditor text={text} setText={setText} handleSave={handleSaveEntry} />}
             <Box display="flex" flexDirection="column" gap={2} >
                 {caption_entries.map((item: EntryProps, key: number) => (
-                    <EntryCard key={key} showCaption={false} entry={item} />
+                    <EntryCard key={key} showCaption={false} entry={item} where="caption" />
                 ))}
             </Box>
 

@@ -49,6 +49,12 @@ export interface EntryResponseProps {
     caption: CaptionProps
 }
 
+export interface EntryByIdResponseProps {
+    status: number;
+    message: string;
+    payload: EntryProps[];
+}
+
 export interface CreateEntryResponseProps {
     status: number;
     message: string;
@@ -66,4 +72,29 @@ export interface CreateEntryProps {
     caption_id: number | any;
     content: string;
     token: string | undefined;
+}
+
+export interface AddFavoriteProps {
+    token: string | undefined;
+    entry_id: number;
+}
+
+export interface AddFavoriteResponseProps {
+    status: number;
+    message: string;
+    payload: EntryProps[];
+    type: string;
+}
+
+export interface AddLikeProps {
+    token: string | undefined;
+    entry_id: number;
+    type: number;
+}
+
+export interface AddLikeResponseProps {
+    status: number;
+    message: string;
+    payload: EntryProps[];
+    type: string;
 }

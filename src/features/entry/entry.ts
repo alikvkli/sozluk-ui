@@ -12,7 +12,7 @@ const initialState: InitialStateProps = {
         caption: {
             page: 1
         }
-    }
+    },
 }
 
 const entrySlice = createSlice({
@@ -36,7 +36,23 @@ const entrySlice = createSlice({
         },
         setEntryCaptionPagination: (state, action: PayloadAction<PageProps>) => {
             state.paginations.caption = action.payload;
-        }
+        },
+        updateEntries: (state, action: PayloadAction<EntryProps[]>) => {
+            const tempCaption = state.caption_entries;
+            const eIndex = tempCaption.findIndex(item => item.entry_id === action.payload[0].entry_id);
+            if (eIndex !== -1) {
+                state.caption_entries[eIndex] = action.payload[0];
+            }
+            const tempHome = state.home_entries;
+            const eIndex2 = tempHome.findIndex(item => item.entry_id === action.payload[0].entry_id);
+            if (eIndex2 !== -1) {
+                state.home_entries[eIndex2] = action.payload[0];
+            }
+            state.entry_detail = action.payload[0];
+        },
+        setEntryDetail: (state, action: PayloadAction<EntryProps>) => {
+            state.entry_detail = action.payload
+        },
     }
 });
 export const {
@@ -46,5 +62,7 @@ export const {
     setEntryCaptionPagination,
     clearCaptionEntries,
     setCaptionEntries,
+    updateEntries,
+    setEntryDetail
 } = entrySlice.actions;
 export default entrySlice.reducer;

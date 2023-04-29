@@ -33,7 +33,7 @@ const EntryEditor: FC<EntryEditorProps> = ({ text, handleSave, setText, title, b
                 <TextField
                     fullWidth={true}
                     id="filled-multiline-flexible"
-                    label={`"${title ? title : active_caption?.title}" hakkında düşüncelerini yaz...`}
+                    label={`${title ? `${title}` : `"${active_caption?.title}" hakkında düşüncelerini yaz...`}`}
                     multiline
                     minRows={2}
                     maxRows={4}

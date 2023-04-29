@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface BreadCrumbProp{
-    component?:React.ReactNode,
-    title: string  | undefined;
+export interface BreadCrumbProp {
+    component?: React.ReactNode,
+    title: React.ReactNode | undefined;
 }

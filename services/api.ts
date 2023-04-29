@@ -1,11 +1,12 @@
 import axios from "axios";
 import { CaptionResponseProps, CreateCaptionProps, CreateCaptionResponseProps, GetCaptionProps } from "../types/api/captions";
-import { CreateEntryProps, CreateEntryResponseProps, EntryResponseProps, GetEntriesProp } from "../types/api/entries";
+import { AddFavoriteProps, AddFavoriteResponseProps, AddLikeProps, AddLikeResponseProps, CreateEntryProps, CreateEntryResponseProps, EntryByIdResponseProps, EntryResponseProps, GetEntriesProp } from "../types/api/entries";
 import { RegisterDataProps } from "@/components/pages/register/Register.types";
 import { LoginUserProps, RegisterUserProps } from "../types/api/user";
 import { LoginDataProps } from "@/components/pages/login/Login.types";
 import { SearchProps, SearchResponseProps } from "../types/api/search";
 import { TopicsResponseProps } from "../types/api/topics";
+import { AddCommentProps, AddCommentResponseProps, DeleteCommentResponseProps } from "../types/api/comment";
 
 axios.defaults.baseURL = "http://127.0.0.1:8000/api"
 
@@ -102,5 +103,63 @@ export const createCaption = async (props: CreateCaptionProps): Promise<CreateCa
 
 export const getTopics = async (): Promise<TopicsResponseProps> => {
     const res = await axios.get("/getTopics");
+    return res.data;
+}
+
+export const addFavorite = async (props: AddFavoriteProps): Promise<AddFavoriteResponseProps> => {
+    let data = new FormData();
+    data.append("entry_id", props.entry_id.toString());
+    const res = await axios.post("/addFavorite", data, {
+        headers: {
+            "Authorization": `Bearer ${props.token}`
+        }
+    });
+
+    return res.data;
+}
+
+export const addLike = async (props: AddLikeProps): Promise<AddLikeResponseProps> => {
+    let data = new FormData();
+    data.append("entry_id", props.entry_id.toString());
+    data.append("type", props.type.toString());
+    const res = await axios.post("/addLike", data, {
+        headers: {
+            "Authorization": `Bearer ${props.token}`
+        }
+    });
+    return res.data;
+}
+
+
+export const getEntryById = async (id: number): Promise<EntryByIdResponseProps | undefined> => {
+    let params = new URLSearchParams();
+    params.append("id", id.toString());
+    const res = await axios.get("/getEntry", {
+        params: params
+    });
+    return res.data;
+}
+
+export const addComment = async (props: AddCommentProps): Promise<AddCommentResponseProps> => {
+    let data = new FormData();
+    data.append("entry_id", props.entry_id.toString());
+    data.append('comment', props.comment);
+    const res = await axios.post("/addComment", data, {
+        headers: {
+            "Authorization": `Bearer ${props.token}`
+        }
+    });
+    return res.data;
+}
+
+export const deleteComment = async ({ id, token }: { id: number, token: string | undefined }): Promise<DeleteCommentResponseProps> => {
+    const res = await axios.delete(`/deleteComment`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+        data:{
+            id: id
+        }
+    });
     return res.data;
 }

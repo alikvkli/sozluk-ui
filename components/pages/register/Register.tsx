@@ -1,5 +1,5 @@
 import BreadCrumbs from "@/components/common/BreadCrumbs/BreadCrumbs";
-import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
 import * as Styled from "./Register.styles";
 import { LoadingButton } from "@mui/lab";
 import React, { useState } from "react";
@@ -50,7 +50,7 @@ const Register = () => {
 
     return (
         <>
-            <BreadCrumbs title="Kayıt Ol" />
+            <BreadCrumbs title={<Typography fontSize={20} fontWeight={500}>Kayıt Ol </Typography>} />
             <Styled.RegisterCardContainer display="flex" flexDirection="column" gap={2}>
                 <TextField id="name" label="Ad & Soyad" value={data.name} variant="outlined" onChange={handleChange} error={!!formErrors.name} helperText={formErrors.name && formErrors.name.join(", ")} />
                 <TextField id="username" label="Kullanıcı adı" value={data.username} variant="outlined" onChange={handleChange} error={!!formErrors.username} helperText={formErrors.username && formErrors.username.join(", ").replace("username", "Kullanıcı adı")} />

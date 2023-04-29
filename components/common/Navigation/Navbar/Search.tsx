@@ -113,7 +113,7 @@ const SearchBar: FC<SearchBarProps> = ({ searchMenu, setSearchMenu }) => {
                         <Avatar>
                             <Lightbulb />
                         </Avatar>
-                        <Box display="flex" sx={{ cursor: "pointer" }} component="a" onClick={() => router.push(`/${item.slug}`).finally(() => handleCloseSearchMenu())} flexDirection="column">
+                        <Box display="flex"  sx={{ cursor: "pointer" }} component="a" onClick={() => router.push(`/${item.slug}`).finally(() => handleCloseSearchMenu())} flexDirection="column">
                             <Typography>{item.search}</Typography>
                             <Typography color="GrayText" fontSize={14}>
                                 {item.entries_count} entry | {new Date(item.created_at as string).toLocaleDateString("tr-TR", { hour: "2-digit", minute: "2-digit" })}
@@ -127,7 +127,7 @@ const SearchBar: FC<SearchBarProps> = ({ searchMenu, setSearchMenu }) => {
                         <Avatar>
                             <Grid3x3 />
                         </Avatar>
-                        <Box display="flex" flexDirection="column">
+                        <Box display="flex" sx={{cursor: "pointer"}} flexDirection="column" component="a" onClick={() => router.push(`/entry/${item?.id}`).finally(() => handleCloseSearchMenu())}>
                             <Typography>
                                 {item.search}
                             </Typography>
@@ -189,7 +189,7 @@ const SearchBar: FC<SearchBarProps> = ({ searchMenu, setSearchMenu }) => {
                             showTopic={true}
                             selectTopic={selectTopic}
                             handleSelectTopic={handleSelectTopic}
-                            title={searchText} />
+                            title={`"${searchText}" hakkında düşüncelerini yaz...`} />
                     )}
                     {search_data && search_data.length > 0 && search_data.map((item, index) => (
                         <Fragment key={index}>{getTypeComponent(item)}</Fragment>

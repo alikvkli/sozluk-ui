@@ -1,7 +1,7 @@
 import BreadCrumbs from "@/components/common/BreadCrumbs/BreadCrumbs";
 import EntryCard from "@/components/common/Cards/EntryCard/EntryCard";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { EntryProps } from "../../../types/api/entries";
 import { LoadingButton } from "@mui/lab";
 import { getAllEntries } from "@/services/api";
@@ -23,13 +23,13 @@ const Home = () => {
 
     return (
         <>
-            <BreadCrumbs title="Anasayfa" />
+            <BreadCrumbs title={<Typography fontSize={20} fontWeight={500}>Anasayfa</Typography>} />
             <Box display="flex" flexDirection="column" bgcolor="#ffffff">
                 {home_entries.map((item: EntryProps, key: number) => (
-                    <EntryCard key={key} showCaption={true} entry={item} />
+                    <EntryCard key={key} showCaption={true} entry={item} where="home" />
                 ))}
                 {paginations.home.page !== paginations.home.total && (
-                    <LoadingButton  loading={loading} onClick={handleLoadMore} sx={{ mb: 1, zIndex: 10 }} >Daha Fazla Göster</LoadingButton>
+                    <LoadingButton loading={loading} onClick={handleLoadMore} sx={{ mb: 1, zIndex: 10 }} >Daha Fazla Göster</LoadingButton>
                 )}
             </Box>
         </>
