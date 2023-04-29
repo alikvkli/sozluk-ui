@@ -1,40 +1,31 @@
-import { Alert, Avatar, Box, Button, Snackbar, TextField } from "@mui/material";
+import { Alert, Avatar, Box, Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, Snackbar, TextField } from "@mui/material";
 import * as Styled from "./EntryEditor.styles"
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import { LoadingButton } from "@mui/lab";
-import { createEntry } from "@/services/api";
-import { useRouter } from "next/router";
-import { setLoading } from "@/features/app/app";
-import { NotificationState } from "@/components/pages/register/Register.types";
-import Notification from "@/components/common/Notification/Notification";
+import { EntryEditorProps } from "./EntryEditor.types";
 
-const EntryEditor = () => {
-    const dispatch = useAppDispatch();
-    const { activeCaption } = useAppSelector(state => state.caption);
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 100
+        },
+    },
+};
+
+
+
+const EntryEditor: FC<EntryEditorProps> = ({ text, handleSave, setText, title, buttonText = "Paylaş", showTopic, handleSelectTopic, selectTopic }) => {
+
+    const { active_caption } = useAppSelector(state => state.caption);
+    const { topic_data } = useAppSelector(state => state.topic);
     const { loading } = useAppSelector(state => state.app);
-    const { login, token } = useAppSelector(state => state.auth);
-    const [text, setText] = useState<string>("");
-    const [notification, setNotification] = useState<NotificationState>({ open: false, message: "", type: "error" });
+    const { login } = useAppSelector(state => state.auth);
 
-    const router = useRouter();
-    const handleSaveEntry = async () => {
-        dispatch(setLoading(true))
-        await createEntry({ caption_id: activeCaption.id, content: text, token })
-            .then((res) => {
-                if (res.status === 1) {
-                    setNotification({ open: true, message: res.message, type: "success" });
-                    router.push(router.asPath);
-                }
-            })
-            .catch((error) => {
-                setNotification({ open: true, message: error.response.data.message, type: "error" });
-            })
-            .finally(() => {
-                setText("");
-                dispatch(setLoading(false))
-            })
-    }
+
     return (
         <Styled.EntryEditorContainer display="flex" alignItems="flex-start" gap={2}>
             <Avatar sx={{ width: "64px", height: "64px" }}>A</Avatar>
@@ -42,7 +33,7 @@ const EntryEditor = () => {
                 <TextField
                     fullWidth={true}
                     id="filled-multiline-flexible"
-                    label={`"${activeCaption.title}" hakkında düşüncelerini yaz...`}
+                    label={`"${title ? title : active_caption?.title}" hakkında düşüncelerini yaz...`}
                     multiline
                     minRows={2}
                     maxRows={4}
@@ -50,15 +41,32 @@ const EntryEditor = () => {
                     value={text}
                     variant="filled"
                 />
-                <LoadingButton loading={loading} variant="outlined" disabled={text.length < 3 || !login} onClick={() => handleSaveEntry()}>Paylaş</LoadingButton>
+                {showTopic && (
+                    <FormControl fullWidth sx={{ mt: 1, mr: "auto", flex: "none" }} >
+                        <InputLabel id="demo-multiple-checkbox-label">Kategori</InputLabel>
+                        <Select
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            value={selectTopic?.id}
+                            onChange={handleSelectTopic}
+                            input={<OutlinedInput label="Kategori" />}
+                            renderValue={(selected) => selectTopic?.name}
+                            MenuProps={MenuProps}
+                        >
+                            {topic_data.map((topic) => (
+                                <MenuItem key={topic.id} value={topic.id}>
+                                    <Checkbox checked={selectTopic?.id === topic.id} />
+                                    <ListItemText primary={topic.name} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                )}
+
+                <LoadingButton loading={loading} variant="outlined" disabled={text.length < 3 || !login} onClick={() => handleSave()}>{buttonText}</LoadingButton>
 
             </Box>
-            <Notification
-                duration={5000}
-                position={{ vertical: "top", horizontal: "right" }}
-                open={notification.open}
-                setOpen={() => setNotification({ ...notification, open: false })}
-                message={notification.message} type={notification.type} />
+
         </Styled.EntryEditorContainer>
     )
 }

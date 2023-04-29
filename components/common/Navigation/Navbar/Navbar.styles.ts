@@ -45,54 +45,63 @@ export const StyledInputBase = styled(InputBase)({
 });
 
 export const StyledSearchButton = styled(IconButton)({
-    background:theme.palette.common.white,
-    borderRadius:theme.shape.borderRadius,
+    background: theme.palette.common.white,
+    borderRadius: theme.shape.borderRadius,
     '&:hover': {
         background: theme.palette.info.contrastText
+    },
+    ":disabled": {
+        background: theme.palette.info.contrastText,
+        opacity: "0.5"
+
     }
 })
 
 export const StyledSearchContainer = styled(Box)({
     width: "33rem",
-    height:"450px",
-    padding:"0 16px 0",
-    marginTop:"16px",
-    marginBottom:"16px",
-    overflow:"auto",
-    gap:"16px"
+    height: "450px",
+    padding: "0 16px 0",
+    marginTop: "16px",
+    marginBottom: "16px",
+    overflow: "auto",
+    gap: "16px"
 })
 
 export const StyledSearchItem = styled(Box)({
     backgroundColor: "#efefef",
     borderRadius: theme.shape.borderRadius,
-    padding:"16px",
-    gap:"16px"
+    padding: "16px",
+    gap: "16px"
 })
 
 export const StyledNotificationContainer = styled(Box)({
     width: "500px",
-    height:"450px",
-    padding:"0 16px 0",
-    marginTop:"16px",
-    marginBottom:"16px",
-    overflow:"auto",
+    height: "450px",
+    padding: "0 16px 0",
+    marginTop: "16px",
+    marginBottom: "16px",
+    overflow: "auto",
 })
 
 export const StyledSearchPaginationContainer = styled(Box)({
-    marginTop:"auto"
+    marginTop:"auto",
+    position: "sticky",
+    bottom: "0",
+    zIndex: 1,
+    background: "#ffffff"
 })
 
 export const StyledNotificationTitle = styled(Box)({
-    position:"sticky",
-    top:0,
-    zIndex:1,
-    background:"#ffffff"
+    position: "sticky",
+    top: 0,
+    zIndex: 1,
+    background: "#ffffff"
 })
 
 export const StyledMessageContainer = styled(Box)({
     borderRadius: theme.shape.borderRadius,
-    backgroundColor:"#efefef",
-    padding:"16px",
-    gap:"16px",
-    marginBottom:"16px",
+    backgroundColor: "#efefef",
+    padding: "16px",
+    gap: "16px",
+    marginBottom: "16px",
 })

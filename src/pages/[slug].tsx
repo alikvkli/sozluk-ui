@@ -1,23 +1,45 @@
 import MainLayout from '@/components/common/Layouts/MainLayout/MainLayout'
 import CaptionComponent from '@/components/pages/caption/Caption';
-import { setActiveCaption, setLeftSideBar } from '@/features/caption/caption';
-import { setCaptionEntries, setCaptionPagination } from '@/features/entry/entry';
-import { useAppDispatch } from '@/hooks';
+import { setActiveCaption, setCaptionLoading, setCaptionPagination, setLeftSideBar } from '@/features/caption/caption';
+import { setCaptionEntries, setEntryCaptionPagination } from '@/features/entry/entry';
+import { setTopicData } from '@/features/topic/topic';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 import useUpdateEffect from '@/hooks/useUpdateEffect'
-import { getCaptions, getEntries } from '@/services/api';
+import { getCaptions, getEntries, getTopics } from '@/services/api';
 import { CaptionPageProps } from '@/types/pages';
 import Head from 'next/head'
 import { GetServerSideProps } from 'next/types';
 
 export default function Caption(props: CaptionPageProps) {
     const dispatch = useAppDispatch();
+    const { pagination } = useAppSelector(state => state.caption)
+    const { active_topic } = useAppSelector(state => state.topic)
 
     useUpdateEffect(() => {
-        dispatch(setLeftSideBar(props.captions))
+        if (!active_topic) {
+            dispatch(setLeftSideBar(props.captions.payload.data))
+            dispatch(setCaptionPagination({ page: props.captions.payload.pagination.current_page, total: props.captions.payload.pagination.total_pages }))
+
+        } else {
+            checkTopicSelected();
+        }
         dispatch(setActiveCaption(props.entries.caption));
         dispatch(setCaptionEntries(props.entries.data));
-        dispatch(setCaptionPagination({ page: props.entries.pagination.current_page, total: props.entries.pagination.total_pages}))
+        dispatch(setEntryCaptionPagination({ page: props.entries.pagination.current_page, total: props.entries.pagination.total_pages }))
+        dispatch(setTopicData(props.topics.payload));
     }, [props, dispatch])
+
+    const checkTopicSelected = async () => {
+        dispatch(setCaptionLoading(true));
+        await getCaptions({ page: pagination?.page | 1, topic_id: active_topic?.id }).then(res => {
+            dispatch(setLeftSideBar(res.payload.data))
+            dispatch(setCaptionPagination({ page: res.payload.pagination.current_page, total: res.payload.pagination.total_pages }))
+        }).finally(() => {
+            dispatch(setCaptionLoading(false));
+        })
+
+    }
+
     return (
         <>
             <Head>
@@ -33,12 +55,14 @@ export default function Caption(props: CaptionPageProps) {
     )
 }
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const captionsData = await getCaptions({ page: 1 })
-    const captionEntryData = await getEntries({ page: context.query['epage'] || 1, caption: context.query.slug })
+    const captions = await getCaptions({ page: 1 })
+    const entriesByCaptionId = await getEntries({ page: context.query['epage'] || 1, caption: context.query.slug })
+    const topics = await getTopics();
     return {
         props: {
-            captions: captionsData.payload.data,
-            entries: captionEntryData.payload
+            captions: captions,
+            entries: entriesByCaptionId.payload,
+            topics: topics
         },
     }
 }

@@ -34,7 +34,7 @@ const entrySlice = createSlice({
         setHomePagination: (state, action: PayloadAction<PageProps>) => {
             state.paginations.home = action.payload;
         },
-        setCaptionPagination: (state, action: PayloadAction<PageProps>) => {
+        setEntryCaptionPagination: (state, action: PayloadAction<PageProps>) => {
             state.paginations.caption = action.payload;
         }
     }
@@ -43,7 +43,7 @@ export const {
     setHomeEntries,
     clearHomeEntries,
     setHomePagination,
-    setCaptionPagination,
+    setEntryCaptionPagination,
     clearCaptionEntries,
     setCaptionEntries,
 } = entrySlice.actions;

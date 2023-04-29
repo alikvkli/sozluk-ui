@@ -6,3 +6,9 @@ export const isDataComplete = (data: any): boolean => {
     }
     return true;
 }
+
+export const handleEnterKeyPress = (callback: (event: React.KeyboardEvent<HTMLInputElement>) => void) => (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+        callback(event);
+    }
+};

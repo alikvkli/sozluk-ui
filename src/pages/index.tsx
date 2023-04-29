@@ -3,23 +3,27 @@ import Head from 'next/head'
 import React from "react";
 import Home from '@/components/pages/home/Home';
 import { GetServerSideProps } from 'next/types';
-import { getAllEntries, getCaptions } from '@/services/api';
+import { getAllEntries, getCaptions, getTopics } from '@/services/api';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import useUpdateEffect from '@/hooks/useUpdateEffect';
 import { IndexPageProps } from '@/types/pages';
 import { clearHomeEntries, setHomeEntries, setHomePagination } from '@/features/entry/entry';
 import { setLeftSideBar } from '@/features/caption/caption';
+import { setTopicData } from '@/features/topic/topic';
 
 export default function Index(props: IndexPageProps) {
   const dispatch = useAppDispatch();
   const { brandName } = useAppSelector(state => state.app);
-
+  const { active_topic } = useAppSelector(state => state.topic)
 
   useUpdateEffect(() => {
     dispatch(clearHomeEntries());
-    dispatch(setLeftSideBar(props.captions));
-    dispatch(setHomeEntries(props.entries.data));
-    dispatch(setHomePagination({ page: props.entries.pagination.current_page, total: props.entries.pagination.total_pages }))
+    if(!active_topic){
+      dispatch(setLeftSideBar(props.captions.payload.data));
+    }
+    dispatch(setHomeEntries(props.entries.payload.data));
+    dispatch(setHomePagination({ page: props.entries.payload.pagination.current_page, total: props.entries.payload.pagination.total_pages }))
+    dispatch(setTopicData(props.topics.payload));
   }, [dispatch])
 
   return (
@@ -37,12 +41,14 @@ export default function Index(props: IndexPageProps) {
   )
 }
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const res = await getCaptions({ page: 1 })
+  const captions = await getCaptions({ page: 1 })
   const entries = await getAllEntries({ page: 1 });
+  const topics = await getTopics();
   return {
     props: {
-      captions: res.payload.data,
-      entries: entries.payload
+      captions: captions,
+      entries: entries,
+      topics: topics
     },
   }
 }

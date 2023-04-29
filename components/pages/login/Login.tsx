@@ -1,5 +1,5 @@
 import BreadCrumbs from "@/components/common/BreadCrumbs/BreadCrumbs";
-import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import * as Styled from "./Login.styles";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { LoginDataProps } from "./Login.types";
@@ -11,6 +11,7 @@ import { isDataComplete } from "@/utils";
 import { login } from "@/services/api";
 import Notification from "@/components/common/Notification/Notification";
 import { setLogin } from "@/features/auth/auth";
+import { useRouter } from "next/router";
 
 const Login = () => {
     const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ const Login = () => {
     const [data, setData] = useState<LoginDataProps>({ email: "", password: "" });
     const [formErrors, setFormErrors] = useState<FormErrors>({});
     const [notification, setNotification] = useState<NotificationState>({ open: false, message: "", type: "error" });
+    const router = useRouter();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = event.target;
@@ -59,7 +61,7 @@ const Login = () => {
                 <TextField id="password" label="Şifre" value={data.password} variant="outlined" onChange={handleChange} error={!!formErrors.password} helperText={formErrors.password && formErrors.password.join(", ")} />
                 {/*                 <FormControlLabel control={<Checkbox style={{ width: "fit-content" }} />} label="Beni hatırla" /> */}
                 <LoadingButton onClick={() => handleLogin()} loading={loading} disabled={!isDataComplete(data)} variant="outlined">Giriş Yap</LoadingButton>
-                <Button>Şifremi unuttum!</Button>
+                <Button component="a" onClick={() => router.push("/kayit-ol")} >Hesap oluştur!</Button>
             </Styled.LoginCardContainer>
             <Notification
                 position={{ vertical: "top", horizontal: "right" }}

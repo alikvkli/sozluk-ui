@@ -6,6 +6,8 @@ import { encryptTransform } from 'redux-persist-transform-encrypt';
 import auth from "@/features/auth/auth";
 import entry from "@/features/entry/entry";
 import caption from "@/features/caption/caption";
+import search from "@/features/search/search";
+import topic from "@/features/topic/topic";
 
 
 const encryptor = encryptTransform({
@@ -18,8 +20,10 @@ const encryptor = encryptTransform({
 const reducers = combineReducers({
     app: app,
     auth: auth,
-    entry:entry,
-    caption:caption
+    entry: entry,
+    caption: caption,
+    search: search,
+    topic: topic
 });
 
 const persistConfig = {
@@ -30,7 +34,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
-    reducer: typeof window !== undefined ?  persistedReducer : reducers,
+    reducer: typeof window !== undefined ? persistedReducer : reducers,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false

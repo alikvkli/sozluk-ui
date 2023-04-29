@@ -10,27 +10,51 @@ export interface CaptionResponseProps {
 }
 
 
-export interface PropertiesProps{
+export interface PropertiesProps {
     bold: boolean;
     writable: boolean;
     editable: boolean;
 }
 
 export interface GetCaptionProps {
-    page: number
+    page: number,
+    topic_id?: number;
 }
 
 
 export interface CaptionProps {
-    id?:number;
-    user_id?: number;
-    title?: string;
-    slug?: string;
-    properties?: PropertiesProps
-    pending?: boolean;
-    show?: boolean;
-    created_at?: string;
-    updated_at?: string | null;
-    username?: string;
-    entry_count?: number;
+    topic: {
+        id: number;
+        name: string;
+        slug: string;
+    };
+    id: string;
+    title: string | null | undefined;
+    slug: string;
+    entry_count: number;
+    properties: {
+        bold: boolean;
+        writable: boolean;
+        editable: boolean;
+    };
+    pending: boolean;
+    show: boolean;
+    user: {
+        username: string;
+    };
+}
+
+
+export interface CreateCaptionProps {
+    token: string | undefined;
+    title: string;
+    topic_id: number;
+    content: string;
+}
+
+export interface CreateCaptionResponseProps {
+    status: number;
+    message: string;
+    url: string;
+
 }
