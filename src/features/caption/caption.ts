@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { InitialStateProps } from "./caption.types";
+import { CaptionProps } from "../../../types/api/captions";
 
 const initialState: InitialStateProps = {
     captions: [],
@@ -32,6 +33,13 @@ const captionSlice = createSlice({
         },
         setCaptionLoading: (state, action: PayloadAction<InitialStateProps['caption_loading']>) => {
             state.caption_loading = action.payload
+        },
+        updateCaption: (state, action: PayloadAction<CaptionProps>) => {
+            const tempCaptions = state.captions;
+            const findIndex = tempCaptions.findIndex(item => item.id === action.payload.id);
+            if (findIndex !== -1) {
+                tempCaptions[findIndex] = action.payload;
+            }
         }
     }
 });
@@ -41,6 +49,7 @@ export const {
     clearActiveCaption,
     setCaptionPagination,
     clearPagination,
-    setCaptionLoading
+    setCaptionLoading,
+    updateCaption
 } = captionSlice.actions;
 export default captionSlice.reducer;

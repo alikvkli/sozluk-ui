@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CaptionResponseProps, CreateCaptionProps, CreateCaptionResponseProps, GetCaptionProps } from "../types/api/captions";
-import { AddFavoriteProps, AddFavoriteResponseProps, AddLikeProps, AddLikeResponseProps, CreateEntryProps, CreateEntryResponseProps, EntryByIdResponseProps, EntryResponseProps, GetEntriesProp } from "../types/api/entries";
+import { AddFavoriteProps, AddFavoriteResponseProps, AddLikeProps, AddLikeResponseProps, CreateEntryProps, CreateEntryResponseProps, DeleteEntryResponseProps, EntryByIdResponseProps, EntryResponseProps, GetEntriesProp } from "../types/api/entries";
 import { RegisterDataProps } from "@/components/pages/register/Register.types";
 import { LoginUserProps, RegisterUserProps } from "../types/api/user";
 import { LoginDataProps } from "@/components/pages/login/Login.types";
@@ -157,7 +157,19 @@ export const deleteComment = async ({ id, token }: { id: number, token: string |
         headers: {
             "Authorization": `Bearer ${token}`,
         },
-        data:{
+        data: {
+            id: id
+        }
+    });
+    return res.data;
+}
+
+export const deleteEntry = async ({ id, token }: { id: number, token: string | undefined }): Promise<DeleteEntryResponseProps> => {
+    const res = await axios.delete(`/deleteEntry`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+        data: {
             id: id
         }
     });

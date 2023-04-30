@@ -98,3 +98,9 @@ export interface AddLikeResponseProps {
     payload: EntryProps[];
     type: string;
 }
+
+export interface DeleteEntryResponseProps{
+    status: number;
+    message : string;
+    caption: CaptionProps;
+}

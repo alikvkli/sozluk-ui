@@ -5,12 +5,13 @@ import { ArrowDownward, ArrowUpward, ChatBubbleOutline, Favorite, FavoriteBorder
 import { EntryCardProps } from './EntryCard.types';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { useRouter } from 'next/router';
-import { clearCaptionEntries, updateEntries } from '@/features/entry/entry';
-import { clearActiveCaption } from '@/features/caption/caption';
-import { addFavorite, addLike } from '@/services/api';
+import { clearCaptionEntries, deleteEntries, updateEntries } from '@/features/entry/entry';
+import { clearActiveCaption, updateCaption } from '@/features/caption/caption';
+import { addFavorite, addLike, deleteEntry } from '@/services/api';
 import { NotificationState } from '@/components/pages/register/Register.types';
 import Notification from "@/components/common/Notification/Notification";
 import { isMyFavorite, isMyLiked } from '@/utils';
+import StandartModal from '../../Modals/StandartModal/StandartModal';
 
 
 const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where }) => {
@@ -21,7 +22,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
     const [selectedCheckbox, setSelectedCheckbox] = React.useState(isMyLiked(entry?.likes, user?.username));
     const [checkFavorite, setCheckFavorite] = React.useState(isMyFavorite(entry?.favorites, user?.username));
     const [notification, setNotification] = React.useState<NotificationState>({ open: false, message: "", type: "error" });
-
+    const [showModal, setShowModal] = React.useState<boolean>(false);
     const handleCloseEntryMenu = () => {
         setEntrySetting(null);
     }
@@ -72,6 +73,31 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
         }
     }
 
+    const handleDelete = async (action?: boolean) => {
+        if (!action) {
+            setShowModal(true);
+            return;
+        }
+        await deleteEntry({ id: entry.entry_id, token: token }).then(res => {
+            if (res.status === 1) {
+                if (router.pathname === "/entry/[id]") {
+                    router.push(`/${entry.caption_slug}`);
+                }
+                setShowModal(false);
+                dispatch(deleteEntries(entry.entry_id));
+                dispatch(updateCaption(res.caption));
+                setNotification({ open: true, message: res.message, type: "success" });
+                handleCloseEntryMenu();
+            } else {
+                setNotification({ open: true, message: res.message, type: "error" });
+            }
+        }).catch(error => {
+            console.log(error)
+            setNotification({ open: true, message: error.response?.data?.message || error?.message, type: "error" });
+        })
+
+    }
+
 
 
     return (
@@ -79,23 +105,25 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
             <Box display="flex" flexDirection="row" alignItems="flex-start" gap={1}>
                 <Avatar sx={{ width: "48px", height: "48px" }}>A</Avatar>
                 <Box display="flex" flex={1} flexDirection="column">
+
                     {showCaption && (
-                        <Box display="flex" alignItems="center" justifyContent="space-between">
-                            <Typography component="a" sx={{cursor:"pointer"}} onClick={() => routeToCaption(entry?.caption_slug)} fontWeight={500} fontSize={17}>{entry?.caption}</Typography>
+                        <Typography component="a" sx={{ cursor: "pointer" }} onClick={() => routeToCaption(entry?.caption_slug)} fontWeight={500} fontSize={17}>{entry?.caption}</Typography>
+                    )}
+
+                    <Box display="flex" alignItems="center" justifyContent="space-between">
+                        <Box display="flex" flexDirection="row" gap={1}>
+                            <Typography color="#536471" fontSize={14}>@{entry?.username}</Typography>
+                            <Divider orientation="vertical" flexItem />
+                            <Typography sx={{ cursor: "pointer" }} component="a" onClick={() => router.push(`/entry/${entry?.entry_id}`)} color="#536471" fontSize={14}>#{entry?.entry_id}</Typography>
+                        </Box>
+                        <Box display="flex" alignItems="center" gap={1}>
+                            <Typography color="#536471" fontSize={14}>{new Date(entry?.created_at).toLocaleDateString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</Typography>
                             {login && (
                                 <IconButton onClick={(e: React.MouseEvent<HTMLElement>) => setEntrySetting(e.currentTarget)}>
                                     <MoreVert />
                                 </IconButton>
                             )}
                         </Box>
-                    )}
-                    <Box display="flex" alignItems="flex-start" justifyContent="space-between">
-                        <Box display="flex" flexDirection="row" gap={1}>
-                            <Typography color="#536471" fontSize={14}>@{entry?.username}</Typography>
-                            <Divider orientation="vertical" flexItem />
-                            <Typography sx={{cursor:"pointer"}} component="a" onClick={() => router.push(`/entry/${entry?.entry_id}`)} color="#536471" fontSize={14}>#{entry?.entry_id}</Typography>
-                        </Box>
-                        <Typography color="#536471" fontSize={14}>{new Date(entry?.created_at).toLocaleDateString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</Typography>
                     </Box>
                     <Typography>
                         {entry?.content}
@@ -132,7 +160,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
                             />
                             <Typography>{entry?.favorites?.length}</Typography>
                         </Box>
-                        <IconButton  onClick={() => router.push(`/entry/${entry?.entry_id}`)} >
+                        <IconButton onClick={() => router.push(`/entry/${entry?.entry_id}`)} >
                             <Badge badgeContent={entry?.comments?.length} max={10} color="error">
                                 <ChatBubbleOutline />
                             </Badge>
@@ -158,13 +186,14 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
                 <MenuItem>
                     <Typography textAlign="center">Düzenle</Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={() => handleDelete()}>
                     <Typography textAlign="center">Sil</Typography>
                 </MenuItem>
                 <MenuItem>
                     <Typography textAlign="center">Paylaş</Typography>
                 </MenuItem>
             </Menu>
+            <StandartModal setShow={setShowModal} show={showModal} callback={() => handleDelete(true)} buttonText={{ dismiss: "Kapat", agree: "Onaylıyorum" }} content="Bu işlem gerçekleştirildiğinde ilgili entry ile ilgili yorum, favori ve oylama verileride silinecektir" title={`#${entry?.entry_id} numaralı entry'yi sil`} />
             <Notification
                 duration={4000}
                 position={{ vertical: "top", horizontal: "right" }}

@@ -53,6 +53,20 @@ const entrySlice = createSlice({
         setEntryDetail: (state, action: PayloadAction<EntryProps>) => {
             state.entry_detail = action.payload
         },
+        deleteEntries: (state, action: PayloadAction<number>) => {
+            const tempCaption = state.caption_entries;
+            const eIndex = tempCaption.findIndex(item => item.entry_id === action.payload);
+            if (eIndex !== -1) {
+                tempCaption.splice(eIndex, 1);
+                state.caption_entries = tempCaption;
+            }
+            const tempHome = state.home_entries;
+            const eIndex2 = tempHome.findIndex(item => item.entry_id === action.payload);
+            if (eIndex2 !== -1) {
+                tempHome.splice(eIndex2, 1);
+                state.home_entries = tempHome;
+            }
+        }
     }
 });
 export const {
@@ -63,6 +77,7 @@ export const {
     clearCaptionEntries,
     setCaptionEntries,
     updateEntries,
-    setEntryDetail
+    setEntryDetail,
+    deleteEntries
 } = entrySlice.actions;
 export default entrySlice.reducer;

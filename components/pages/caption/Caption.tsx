@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 import Notification from "@/components/common/Notification/Notification";
 import { useState } from "react";
 import { NotificationState } from "../register/Register.types";
+import { v4 as uuidv4 } from 'uuid';
+
 
 const CaptionComponent = () => {
     const dispatch = useAppDispatch();
@@ -60,7 +62,7 @@ const CaptionComponent = () => {
             {active_caption?.title && <EntryEditor text={text} setText={setText} handleSave={handleSaveEntry} />}
             <Box display="flex" flexDirection="column" gap={2} >
                 {caption_entries.map((item: EntryProps, key: number) => (
-                    <EntryCard key={key} showCaption={false} entry={item} where="caption" />
+                    <EntryCard key={uuidv4()} showCaption={false} entry={item} where="caption" />
                 ))}
             </Box>
 

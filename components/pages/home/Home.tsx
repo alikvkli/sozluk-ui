@@ -7,6 +7,7 @@ import { LoadingButton } from "@mui/lab";
 import { getAllEntries } from "@/services/api";
 import { setLoading } from "@/features/app/app";
 import { setHomeEntries, setHomePagination } from "@/features/entry/entry";
+import { v4 as uuidv4 } from 'uuid';
 
 const Home = () => {
     const { loading } = useAppSelector(state => state.app);
@@ -26,7 +27,7 @@ const Home = () => {
             <BreadCrumbs title={<Typography fontSize={20} fontWeight={500}>Anasayfa</Typography>} />
             <Box display="flex" flexDirection="column" bgcolor="#ffffff">
                 {home_entries.map((item: EntryProps, key: number) => (
-                    <EntryCard key={key} showCaption={true} entry={item} where="home" />
+                    <EntryCard key={uuidv4()} showCaption={true} entry={item} where="home" />
                 ))}
                 {paginations.home.page !== paginations.home.total && (
                     <LoadingButton loading={loading} onClick={handleLoadMore} sx={{ mb: 1, zIndex: 10 }} >Daha Fazla Göster</LoadingButton>
