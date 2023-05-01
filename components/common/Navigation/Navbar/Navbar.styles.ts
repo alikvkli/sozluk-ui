@@ -84,7 +84,15 @@ export const StyledNotificationContainer = styled(Box)({
 })
 
 export const StyledSearchPaginationContainer = styled(Box)({
-    marginTop:"auto",
+    marginTop: "auto",
+    position: "sticky",
+    bottom: "0",
+    zIndex: 1,
+    background: "#ffffff"
+})
+
+export const NotificationPaginationContainer = styled(Box)({
+    marginTop: "auto",
     position: "sticky",
     bottom: "0",
     zIndex: 1,
@@ -100,7 +108,15 @@ export const StyledNotificationTitle = styled(Box)({
 
 export const StyledMessageContainer = styled(Box)({
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: "#efefef",
+    backgroundColor: "#f0f0f0",
+    padding: "16px",
+    gap: "16px",
+    marginBottom: "16px",
+})
+
+export const NotificationItemContainer = styled(Box)({
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: "#f0f0f0",
     padding: "16px",
     gap: "16px",
     marginBottom: "16px",

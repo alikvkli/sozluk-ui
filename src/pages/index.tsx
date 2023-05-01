@@ -3,22 +3,24 @@ import Head from 'next/head'
 import React from "react";
 import Home from '@/components/pages/home/Home';
 import { GetServerSideProps } from 'next/types';
-import { getAllEntries, getCaptions, getTopics } from '@/services/api';
+import { getAllEntries, getCaptions, getNotifications, getTopics } from '@/services/api';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import useUpdateEffect from '@/hooks/useUpdateEffect';
 import { IndexPageProps } from '@/types/pages';
 import { clearHomeEntries, setHomeEntries, setHomePagination } from '@/features/entry/entry';
 import { setCaptionPagination, setLeftSideBar } from '@/features/caption/caption';
 import { setTopicData } from '@/features/topic/topic';
+import { setNotificationPagitanion, setNotifications } from '@/features/notification/notification';
 
 export default function Index(props: IndexPageProps) {
   const dispatch = useAppDispatch();
   const { brandName } = useAppSelector(state => state.app);
   const { active_topic } = useAppSelector(state => state.topic)
+  const { login, token } = useAppSelector(state => state.auth)
 
   useUpdateEffect(() => {
     dispatch(clearHomeEntries());
-    if(!active_topic){
+    if (!active_topic) {
       dispatch(setLeftSideBar(props.captions.payload.data));
       dispatch(setCaptionPagination({ page: props.captions.payload.pagination.current_page, total: props.captions.payload.pagination.total_pages }))
 
@@ -26,7 +28,23 @@ export default function Index(props: IndexPageProps) {
     dispatch(setHomeEntries(props.entries.payload.data));
     dispatch(setHomePagination({ page: props.entries.payload.pagination.current_page, total: props.entries.payload.pagination.total_pages }))
     dispatch(setTopicData(props.topics.payload));
-  }, [dispatch])
+  }, [dispatch, active_topic])
+
+
+  useUpdateEffect(() => {
+    if (login) {
+      fetchNotifications();
+    }
+  }, [dispatch, login])
+
+  const fetchNotifications = async () => {
+    await getNotifications({ page: 1, token: token }).then((res) => {
+      dispatch(setNotifications(res.payload.data));
+      dispatch(setNotificationPagitanion({ total: res.payload.pagination.total, total_pages: res.payload.pagination.total_pages, page: res.payload.pagination.current_page, unread_count:res.payload.pagination.unread_count }));
+    }).catch(error => {
+      console.log(error)
+    });
+  }
 
   return (
     <>

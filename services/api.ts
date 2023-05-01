@@ -7,6 +7,7 @@ import { LoginDataProps } from "@/components/pages/login/Login.types";
 import { SearchProps, SearchResponseProps } from "../types/api/search";
 import { TopicsResponseProps } from "../types/api/topics";
 import { AddCommentProps, AddCommentResponseProps, DeleteCommentResponseProps } from "../types/api/comment";
+import { GetNotificationResponseProps, ReadAsNotificationResponseProps } from "../types/api/notification";
 
 axios.defaults.baseURL = "http://127.0.0.1:8000/api"
 
@@ -172,6 +173,30 @@ export const deleteEntry = async ({ id, token }: { id: number, token: string | u
         data: {
             id: id
         }
+    });
+    return res.data;
+}
+
+export const getNotifications = async ({ page, token }: { page: number, token: string | undefined }): Promise<GetNotificationResponseProps> => {
+    const res = await axios.get(`/getNotifications`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+        params: {
+            page: page
+        }
+    });
+    return res.data;
+}
+
+export const readAsNotification = async ({ notification_id, token }: { notification_id: number, token: string | undefined }): Promise<ReadAsNotificationResponseProps> => {
+    let params = new URLSearchParams();
+    params.append("notification_id", notification_id.toString());
+    const res = await axios.get(`/readNotification`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+        params: params
     });
     return res.data;
 }

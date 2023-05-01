@@ -2,10 +2,11 @@ import MainLayout from '@/components/common/Layouts/MainLayout/MainLayout'
 import CaptionComponent from '@/components/pages/caption/Caption';
 import { setActiveCaption, setCaptionLoading, setCaptionPagination, setLeftSideBar } from '@/features/caption/caption';
 import { setCaptionEntries, setEntryCaptionPagination } from '@/features/entry/entry';
+import { setNotificationPagitanion, setNotifications } from '@/features/notification/notification';
 import { setTopicData } from '@/features/topic/topic';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import useUpdateEffect from '@/hooks/useUpdateEffect'
-import { getCaptions, getEntries, getTopics } from '@/services/api';
+import { getCaptions, getEntries, getNotifications, getTopics } from '@/services/api';
 import { CaptionPageProps } from '@/types/pages';
 import Head from 'next/head'
 import { GetServerSideProps } from 'next/types';
@@ -14,16 +15,18 @@ export default function Caption(props: CaptionPageProps) {
     const dispatch = useAppDispatch();
     const { pagination } = useAppSelector(state => state.caption)
     const { active_topic } = useAppSelector(state => state.topic)
+    const { login, token } = useAppSelector(state => state.auth)
+
 
     useUpdateEffect(() => {
         if (!active_topic) {
             dispatch(setLeftSideBar(props.captions.payload.data))
             dispatch(setCaptionPagination({ page: props.captions.payload.pagination.current_page, total: props.captions.payload.pagination.total_pages }))
-    
+
         } else {
             checkTopicSelected();
         }
-       
+
         dispatch(setActiveCaption(props.entries.caption));
         dispatch(setCaptionEntries(props.entries.data));
         dispatch(setEntryCaptionPagination({ page: props.entries.pagination.current_page, total: props.entries.pagination.total_pages }))
@@ -39,6 +42,22 @@ export default function Caption(props: CaptionPageProps) {
             dispatch(setCaptionLoading(false));
         })
     }
+
+    useUpdateEffect(() => {
+        if (login) {
+            fetchNotifications();
+        }
+    }, [dispatch, login])
+
+    const fetchNotifications = async () => {
+        await getNotifications({ page: 1, token: token }).then((res) => {
+            dispatch(setNotifications(res.payload.data));
+            dispatch(setNotificationPagitanion({ total: res.payload.pagination.total, total_pages: res.payload.pagination.total_pages, page: res.payload.pagination.current_page, unread_count: res.payload.pagination.unread_count }));
+        }).catch(error => {
+            console.log(error)
+        });
+    }
+
 
     return (
         <>

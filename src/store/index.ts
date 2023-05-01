@@ -8,6 +8,7 @@ import entry from "@/features/entry/entry";
 import caption from "@/features/caption/caption";
 import search from "@/features/search/search";
 import topic from "@/features/topic/topic";
+import notification from "@/features/notification/notification";
 
 
 const encryptor = encryptTransform({
@@ -23,7 +24,8 @@ const reducers = combineReducers({
     entry: entry,
     caption: caption,
     search: search,
-    topic: topic
+    topic: topic,
+    notification: notification
 });
 
 const persistConfig = {
