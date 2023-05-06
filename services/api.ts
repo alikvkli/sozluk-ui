@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CaptionResponseProps, CreateCaptionProps, CreateCaptionResponseProps, GetCaptionProps } from "../types/api/captions";
-import { AddFavoriteProps, AddFavoriteResponseProps, AddLikeProps, AddLikeResponseProps, CreateEntryProps, CreateEntryResponseProps, DeleteEntryResponseProps, EntryByIdResponseProps, EntryResponseProps, GetEntriesProp } from "../types/api/entries";
+import { AddFavoriteProps, AddFavoriteResponseProps, AddLikeProps, AddLikeResponseProps, CreateEntryProps, CreateEntryResponseProps, DeleteEntryResponseProps, EntryByIdResponseProps, EntryResponseProps, GetEntriesProp, UpdateEntryResponseProps } from "../types/api/entries";
 import { RegisterDataProps } from "@/components/pages/register/Register.types";
 import { LoginUserProps, RegisterUserProps } from "../types/api/user";
 import { LoginDataProps } from "@/components/pages/login/Login.types";
@@ -175,6 +175,19 @@ export const deleteEntry = async ({ id, token }: { id: number, token: string | u
         }
     });
     return res.data;
+}
+
+export const updateEntry = async ({ id, content, token }: { id: number, content: string, token: string | undefined }): Promise<UpdateEntryResponseProps> => {
+    let data = new FormData();
+    data.append("id", id.toString());
+    data.append("content", content);
+    const res = await axios.post("/updateEntry", data, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        }
+    })
+
+    return res.data
 }
 
 export const getNotifications = async ({ page, token }: { page: number, token: string | undefined }): Promise<GetNotificationResponseProps> => {

@@ -104,3 +104,10 @@ export interface DeleteEntryResponseProps{
     message : string;
     caption: CaptionProps;
 }
+
+export interface UpdateEntryResponseProps{
+    status: number;
+    message: string;
+    payload: EntryProps[];
+    type: string;
+}

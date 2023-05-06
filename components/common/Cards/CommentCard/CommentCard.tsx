@@ -10,6 +10,7 @@ import { deleteComment } from "@/services/api";
 import Notification from "@/components/common/Notification/Notification";
 import { NotificationState } from "@/components/pages/register/Register.types";
 import { updateEntries } from "@/features/entry/entry";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 const CommentCard: FC<CommentCardProps> = ({ comment }) => {
     const dispatch = useAppDispatch();
@@ -39,7 +40,7 @@ const CommentCard: FC<CommentCardProps> = ({ comment }) => {
             </Box>
             <Box display="flex" flexDirection="column" justifyContent="flex-end" alignItems="flex-end" gap={1}>
                 <Styled.CommentMessage bgcolor={theme.palette.primary.main} flex={1} padding={1}>
-                    <Typography color="white">{comment.comment}</Typography>
+                    <Typography color="white"><ReactMarkdown children={comment.comment}/></Typography>
                 </Styled.CommentMessage>
                 <Box display="flex" alignItems="center" justifyContent="center">
                     {login && user?.username === comment.username && (

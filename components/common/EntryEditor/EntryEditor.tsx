@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { ChangeEvent, FC, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { EntryEditorProps } from "./EntryEditor.types";
+import theme from "@/config/theme";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -18,7 +19,7 @@ const MenuProps = {
 
 
 
-const EntryEditor: FC<EntryEditorProps> = ({ text, handleSave, setText, title, buttonText = "Paylaş", showTopic, handleSelectTopic, selectTopic }) => {
+const EntryEditor: FC<EntryEditorProps> = ({ closeButton, closeButtonCallback, text, handleSave, setText, title, buttonText = "Paylaş", showTopic, handleSelectTopic, selectTopic, showAvatar = true }) => {
 
     const { active_caption } = useAppSelector(state => state.caption);
     const { topic_data } = useAppSelector(state => state.topic);
@@ -28,7 +29,7 @@ const EntryEditor: FC<EntryEditorProps> = ({ text, handleSave, setText, title, b
 
     return (
         <Styled.EntryEditorContainer display="flex" alignItems="flex-start" gap={2}>
-            <Avatar sx={{ width: "64px", height: "64px" }}>A</Avatar>
+            {showAvatar && <Avatar sx={{ width: "64px", height: "64px" }}>A</Avatar>}
             <Box display="flex" flexDirection="column" gap={1} alignItems="flex-end" flex={1}>
                 <TextField
                     fullWidth={true}
@@ -62,8 +63,12 @@ const EntryEditor: FC<EntryEditorProps> = ({ text, handleSave, setText, title, b
                         </Select>
                     </FormControl>
                 )}
+                <Box display="flex" gap={1}>
+                    {closeButton && <Button color="error" onClick={closeButtonCallback} variant="outlined">İptal Et</Button>}
 
-                <LoadingButton loading={loading} variant="outlined" disabled={text.length < 3 || !login} onClick={() => handleSave()}>{buttonText}</LoadingButton>
+                    <LoadingButton loading={loading} variant="outlined" disabled={text.length < 3 || !login} onClick={() => handleSave()}>{buttonText}</LoadingButton>
+
+                </Box>
 
             </Box>
 

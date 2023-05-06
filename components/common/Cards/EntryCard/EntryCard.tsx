@@ -7,11 +7,13 @@ import { useAppDispatch, useAppSelector } from '@/hooks';
 import { useRouter } from 'next/router';
 import { clearCaptionEntries, deleteEntries, updateEntries } from '@/features/entry/entry';
 import { clearActiveCaption, updateCaption } from '@/features/caption/caption';
-import { addFavorite, addLike, deleteEntry } from '@/services/api';
+import { addFavorite, addLike, deleteEntry, updateEntry } from '@/services/api';
 import { NotificationState } from '@/components/pages/register/Register.types';
 import Notification from "@/components/common/Notification/Notification";
 import { isMyFavorite, isMyLiked } from '@/utils';
 import StandartModal from '../../Modals/StandartModal/StandartModal';
+import EntryEditor from '../../EntryEditor/EntryEditor';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 
 const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where }) => {
@@ -23,6 +25,8 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
     const [checkFavorite, setCheckFavorite] = React.useState(isMyFavorite(entry?.favorites, user?.username));
     const [notification, setNotification] = React.useState<NotificationState>({ open: false, message: "", type: "error" });
     const [showModal, setShowModal] = React.useState<boolean>(false);
+    const [editable, setEditable] = React.useState<boolean>(false);
+    const [text, setText] = React.useState<string>(entry?.content ?? "");
     const handleCloseEntryMenu = () => {
         setEntrySetting(null);
     }
@@ -73,6 +77,27 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
         }
     }
 
+    const handleUpdate = async (action?: boolean) => {
+        if (!action) {
+            handleCloseEntryMenu();
+            setEditable(!editable);
+            return;
+        }
+        await updateEntry({ id: entry.entry_id, content: text, token: token }).then(res => {
+            if (res.status === 1) {
+                dispatch(updateEntries(res.payload));
+                handleEditCancel();
+                setNotification({ open: true, message: res.message, type: "success" });
+
+            } else {
+                setNotification({ open: true, message: res.message, type: "error" });
+            }
+        }).catch(error => {
+            console.log(error)
+            setNotification({ open: true, message: error.response?.data?.message || error?.message, type: "error" });
+        })
+    }
+
     const handleDelete = async (action?: boolean) => {
         if (!action) {
             setShowModal(true);
@@ -98,6 +123,11 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
 
     }
 
+    const handleEditCancel = () => {
+        setEditable(false);
+        handleCloseEntryMenu();
+    }
+
 
 
     return (
@@ -118,16 +148,28 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
                         </Box>
                         <Box display="flex" alignItems="center" gap={1}>
                             <Typography color="#536471" fontSize={14}>{new Date(entry?.created_at).toLocaleDateString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</Typography>
-                            {login && (
+                            {login && entry.username === user?.username && (
                                 <IconButton onClick={(e: React.MouseEvent<HTMLElement>) => setEntrySetting(e.currentTarget)}>
                                     <MoreVert />
                                 </IconButton>
                             )}
                         </Box>
                     </Box>
-                    <Typography>
-                        {entry?.content}
-                    </Typography>
+                    {!editable ? (
+                        <Typography>
+                            <ReactMarkdown children={entry?.content} />
+                        </Typography>
+                    ) : (
+                        <EntryEditor
+                            closeButton={true}
+                            closeButtonCallback={handleEditCancel}
+                            buttonText="Kaydet"
+                            showAvatar={false}
+                            title={`#${entry.entry_id} numaralı entry'i düzenle`}
+                            text={text}
+                            setText={setText}
+                            handleSave={() => handleUpdate(true)} />
+                    )}
 
                     <Box display="flex" alignItems="center" justifyContent="flex-start" mt={1} gap={1}>
                         <Box display="flex" alignItems="center">
@@ -183,15 +225,15 @@ const EntryCard: React.FC<EntryCardProps> = ({ showCaption = true, entry, where 
                 }}
                 open={Boolean(entrySetting)}
                 onClose={handleCloseEntryMenu}>
-                <MenuItem>
+                <MenuItem onClick={() => handleUpdate()}>
                     <Typography textAlign="center">Düzenle</Typography>
                 </MenuItem>
                 <MenuItem onClick={() => handleDelete()}>
                     <Typography textAlign="center">Sil</Typography>
                 </MenuItem>
-                <MenuItem>
+                {/*                 <MenuItem>
                     <Typography textAlign="center">Paylaş</Typography>
-                </MenuItem>
+                </MenuItem> */}
             </Menu>
             <StandartModal setShow={setShowModal} show={showModal} callback={() => handleDelete(true)} buttonText={{ dismiss: "Kapat", agree: "Onaylıyorum" }} content="Bu işlem gerçekleştirildiğinde ilgili entry ile ilgili yorum, favori ve oylama verileride silinecektir" title={`#${entry?.entry_id} numaralı entry'yi sil`} />
             <Notification

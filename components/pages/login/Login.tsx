@@ -7,7 +7,7 @@ import { useState } from "react";
 import { FormErrors, NotificationState } from "../register/Register.types";
 import { setLoading } from "@/features/app/app";
 import { LoadingButton } from "@mui/lab";
-import { isDataComplete } from "@/utils";
+import { handleEnterKeyPress, isDataComplete } from "@/utils";
 import { login } from "@/services/api";
 import Notification from "@/components/common/Notification/Notification";
 import { setLogin } from "@/features/auth/auth";
@@ -58,7 +58,7 @@ const Login = () => {
             <BreadCrumbs title={<Typography fontSize={20} fontWeight={500}>Giriş Yap</Typography>} />
             <Styled.LoginCardContainer display="flex" flexDirection="column" gap={2}>
                 <TextField id="email" label="Email" value={data.email} variant="outlined" onChange={handleChange} error={!!formErrors.email} helperText={formErrors.email && formErrors.email.join(", ").replace("email", "Email")} />
-                <TextField id="password" label="Şifre" value={data.password} variant="outlined" onChange={handleChange} error={!!formErrors.password} helperText={formErrors.password && formErrors.password.join(", ")} />
+                <TextField id="password" onKeyDown={handleEnterKeyPress(handleLogin)} type="password" label="Şifre" value={data.password} variant="outlined" onChange={handleChange} error={!!formErrors.password} helperText={formErrors.password && formErrors.password.join(", ").replace("password", "Şifre")} />
                 {/*                 <FormControlLabel control={<Checkbox style={{ width: "fit-content" }} />} label="Beni hatırla" /> */}
                 <LoadingButton onClick={() => handleLogin()} loading={loading} disabled={!isDataComplete(data)} variant="outlined">Giriş Yap</LoadingButton>
                 <Button component="a" onClick={() => router.push("/kayit-ol")} >Hesap oluştur!</Button>

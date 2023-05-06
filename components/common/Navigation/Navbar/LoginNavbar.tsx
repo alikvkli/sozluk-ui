@@ -113,11 +113,11 @@ const LoginNavbar = () => {
                     </Styled.StyledNotificationTitle>
                     {notifications.length === 0 && <Alert severity="info">Herhangi bir bildiriminiz bulunmamaktadır.</Alert>}
                     {notifications.map(item => (
-                        <Styled.NotificationItemContainer key={uuid()} display="flex" alignItems="flex-start">
+                        <Styled.NotificationItemContainer component="a" onClick={() => handleNotificationClick(item)} key={uuid()} display="flex" alignItems="flex-start">
                             <Avatar sx={{ bgcolor: !item.read_at ? theme.palette.primary.main : "#bdbdbd" }}>
                                 <Notifications />
                             </Avatar>
-                            <Box sx={{ cursor: "pointer" }} component="a" onClick={() => handleNotificationClick(item)}>
+                            <Box sx={{ cursor: "pointer" }}>
                                 <Typography sx={{ color: deepPurple[500] }} fontSize={14} >@{item.username}</Typography>
                                 <Typography sx={{ color: "#000" }} fontSize={14} >{item.data.message}</Typography>
                                 <Typography color="GrayText" fontSize={14} >{convertLocaleDate(item.created_at)}</Typography>

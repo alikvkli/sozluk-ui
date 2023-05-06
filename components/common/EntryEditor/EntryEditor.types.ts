@@ -13,4 +13,7 @@ export interface EntryEditorProps {
     showTopic?: boolean;
     handleSelectTopic?:(e:any) => void;
     selectTopic?: TopicProps;
+    showAvatar?: boolean;
+    closeButton?: boolean;
+    closeButtonCallback?:(e:any) => void;
 }
